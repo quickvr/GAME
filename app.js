@@ -3,7 +3,7 @@
 // Set up scene, camera, and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -27,31 +27,56 @@ function addBlock(x, y, z, color) {
     blocks.add(`${x},${y},${z}`);
 }
 
-// Create an initial grid of blocks
-for (let x = 0; x < 10; x++) {
-    for (let z = 0; z < 10; z++) {
-        addBlock(x * blockSize, 0, z * blockSize, '#8B4513'); // Brown color for ground
+// Create a simple premade terrain
+const terrainHeightMap = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 1, 1, 1, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+];
+
+for (let x = 0; x < terrainHeightMap.length; x++) {
+    for (let z = 0; z < terrainHeightMap[x].length; z++) {
+        if (terrainHeightMap[x][z] === 1) {
+            addBlock(x * blockSize, 0, z * blockSize, '#8B4513'); // Brown color for ground
+        }
     }
 }
 
 // Position the camera
-camera.position.set(5, 5, 10);
-camera.lookAt(5, 0, 5);
+camera.position.set(2.5, 2, 5);
+camera.lookAt(2.5, 0, 2.5);
+
+// Mouse control variables
+let mouseX = 0;
+let mouseY = 0;
+let cameraRotationSpeed = 0.002;
+
+// Handle mouse movement for camera rotation
+document.addEventListener('mousemove', (event) => {
+    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseY = (event.clientY / window.innerHeight) * 2 - 1;
+});
 
 // Handle keyboard input for moving the camera
 document.addEventListener('keydown', (event) => {
     switch (event.key) {
-        case 'ArrowUp':
-            camera.position.z -= 0.5;
+        case 'w': // Forward
+            camera.position.z -= 0.1 * Math.cos(camera.rotation.y);
+            camera.position.x -= 0.1 * Math.sin(camera.rotation.y);
             break;
-        case 'ArrowDown':
-            camera.position.z += 0.5;
+        case 's': // Backward
+            camera.position.z += 0.1 * Math.cos(camera.rotation.y);
+            camera.position.x += 0.1 * Math.sin(camera.rotation.y);
             break;
-        case 'ArrowLeft':
-            camera.position.x -= 0.5;
+        case 'a': // Left
+            camera.position.z -= 0.1 * Math.sin(camera.rotation.y);
+            camera.position.x += 0.1 * Math.cos(camera.rotation.y);
             break;
-        case 'ArrowRight':
-            camera.position.x += 0.5;
+        case 'd': // Right
+            camera.position.z += 0.1 * Math.sin(camera.rotation.y);
+            camera.position.x -= 0.1 * Math.cos(camera.rotation.y);
             break;
     }
 });
@@ -77,6 +102,12 @@ document.addEventListener('keydown', (event) => {
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
+    
+    // Update camera rotation based on mouse movement
+    camera.rotation.y -= (mouseX - 0.5) * cameraRotationSpeed;
+    camera.rotation.x -= (mouseY - 0.5) * cameraRotationSpeed;
+    camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x)); // Clamp vertical rotation
+
     renderer.render(scene, camera);
 }
 
