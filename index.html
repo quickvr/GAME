@@ -3,13 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Block Game</title>
+    <title>Minecraft-like Game with Creative Menu</title>
     <style>
-        body { margin: 0; }
+        body { margin: 0; display: flex; flex-direction: column; }
         canvas { display: block; }
+        #menu {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .block-button {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <div id="menu">
+        <h3>Select Block Type</h3>
+        <button class="block-button" style="background-color: #ff0000;" data-color="#ff0000"></button>
+        <button class="block-button" style="background-color: #00ff00;" data-color="#00ff00"></button>
+        <button class="block-button" style="background-color: #0000ff;" data-color="#0000ff"></button>
+        <button class="block-button" style="background-color: #ffff00;" data-color="#ffff00"></button>
+        <button class="block-button" style="background-color: #ff00ff;" data-color="#ff00ff"></button>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="app.js"></script>
 </body>
