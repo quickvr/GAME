@@ -14,6 +14,11 @@ function init() {
     controls = new THREE.PointerLockControls(camera, document.body);
     scene.add(controls.getObject());
 
+    // Request pointer lock on the click
+    document.addEventListener('click', () => {
+        controls.lock();
+    });
+
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(5, 10, 7.5);
     scene.add(light);
