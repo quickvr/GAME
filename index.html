@@ -3,16 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D FPS Game</title>
+    <title>Pixel Drawing</title>
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
+        body { display: flex; flex-direction: column; align-items: center; }
+        #canvas { display: grid; grid-template-columns: repeat(50, 20px); }
+        .pixel { width: 20px; height: 20px; border: 1px solid #ccc; cursor: pointer; }
+        #colorPicker { margin: 20px; }
+        #saveBtn { margin: 20px; }
     </style>
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
-    <script src="game.js"></script>
+    <input type="color" id="colorPicker" value="#ff0000">
+    <div id="canvas"></div>
+    <button id="saveBtn">Save Image</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const colorPicker = document.getElementById('colorPicker');
+
+        // Create a grid of pixels
+        for (let i = 0; i < 2500; i++) {
+            const pixel = document.createElement('div');
+            pixel.className = 'pixel';
+            pixel.style.backgroundColor = '#fff'; // Default color
+            pixel.addEventListener('click', () => {
+                pixel.style.backgroundColor = colorPicker.value;
+            });
+            canvas.appendChild(pixel);
+        }
+
+        // Save the canvas as an image
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const pixels = document.querySelectorAll('.pixel');
+            const canvasImage = document.createElement('canvas');
+            canvasImage.width = 1000; // 50 * 20px
+            canvasImage.height = 1000; // 50 * 20px
+            const ctx = canvasImage.getContext('2d');
+
+            pixels.forEach((pixel, index) => {
+                const x = (index % 50) * 20; // 50 pixels per row
+                const y = Math.floor(index / 50) * 20; // 20px height per pixel
+                ctx.fillStyle = pixel.style.backgroundColor;
+                ctx.fillRect(x, y, 20, 20);
+            });
+
+            const link = document.createElement('a');
+            link.download = 'pixel-art.png';
+            link.href = canvasImage.toDataURL();
+            link.click();
+        });
+    </script>
 </body>
 </html>
