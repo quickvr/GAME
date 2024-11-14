@@ -27,26 +27,27 @@ function addBlock(x, y, z, color) {
     blocks.add(`${x},${y},${z}`);
 }
 
-// Create a simple premade terrain
-const terrainHeightMap = [
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 1, 1, 1, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0],
-];
+// Generate terrain using Perlin noise
+function generateTerrain() {
+    const width = 100;
+    const depth = 100;
+    const heightScale = 5;
 
-for (let x = 0; x < terrainHeightMap.length; x++) {
-    for (let z = 0; z < terrainHeightMap[x].length; z++) {
-        if (terrainHeightMap[x][z] === 1) {
-            addBlock(x * blockSize, 0, z * blockSize, '#8B4513'); // Brown color for ground
+    for (let x = 0; x < width; x++) {
+        for (let z = 0; z < depth; z++) {
+            const height = Math.floor(Perlin.noise(x / 10, z / 10) * heightScale);
+            for (let y = 0; y <= height; y++) {
+                addBlock(x, y, z, '#8B4513'); // Brown color for dirt
+            }
         }
     }
 }
 
+generateTerrain();
+
 // Position the camera
-camera.position.set(2.5, 2, 5);
-camera.lookAt(2.5, 0, 2.5);
+camera.position.set(50, 30, 50);
+camera.lookAt(50, 0, 50);
 
 // Mouse control variables
 let mouseX = 0;
