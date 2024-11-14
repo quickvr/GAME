@@ -21,12 +21,12 @@ scene.add(directionalLight);
 // Skybox texture
 const skyboxGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
 const skyboxMaterials = [
-    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Right
-    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Left
-    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Top
-    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Bottom
-    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Front
-    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide })  // Back
+    new THREE.MeshBasicMaterial({ color: 0x87CEEB, side: THREE.BackSide }), // Sky color
+    new THREE.MeshBasicMaterial({ color: 0x87CEEB, side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ color: 0x87CEEB, side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ color: 0x87CEEB, side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ color: 0x87CEEB, side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ color: 0x87CEEB, side: THREE.BackSide })
 ];
 const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials);
 scene.add(skybox);
