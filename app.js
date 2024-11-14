@@ -18,6 +18,19 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(10, 10, 10).normalize();
 scene.add(directionalLight);
 
+// Skybox texture
+const skyboxGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
+const skyboxMaterials = [
+    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Right
+    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Left
+    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Top
+    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Bottom
+    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide }), // Front
+    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://cdn.pixabay.com/photo/2013/07/12/17/18/sky-73969_960_720.jpg'), side: THREE.BackSide })  // Back
+];
+const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterials);
+scene.add(skybox);
+
 // Block properties
 const blockSize = 1;
 let currentBlockColor = '#8B4513'; // Default block color
@@ -57,13 +70,13 @@ function generateTerrain() {
         }
     }
 
-    // Create a ground plane
-    const groundGeometry = new THREE.PlaneGeometry(200, 200);
-    const groundMaterial = new THREE.MeshLambertMaterial({ color: '#228B22' }); // Green for grass
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = - Math.PI / 2;
-    ground.position.y = -1; // Position below the terrain
-    scene.add(ground);
+    // Create a floor with grass texture
+    const floorGeometry = new THREE.PlaneGeometry(200, 200);
+    const floorMaterial = new THREE.MeshLambertMaterial({ color: '#228B22' }); // Green for grass
+    const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.rotation.x = - Math.PI / 2;
+    floor.position.y = -1; // Position below the terrain
+    scene.add(floor);
 }
 
 // Call terrain generation
