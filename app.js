@@ -7,15 +7,21 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Create physics world
+const world = new CANNON.World();
+world.gravity.set(0, -9.82, 0); // m/s²
+
 // Add lighting
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(1, 1, 1).normalize();
-scene.add(light);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(10, 10, 10).normalize();
+scene.add(directionalLight);
 
 // Block properties
 const blockSize = 1;
+let currentBlockColor = '#8B4513'; // Default block color
 const blocks = new Set();
-let currentBlockColor = '#ff0000'; // Default block color
 
 // Function to add blocks
 function addBlock(x, y, z, color) {
@@ -25,6 +31,15 @@ function addBlock(x, y, z, color) {
     block.position.set(x, y, z);
     scene.add(block);
     blocks.add(`${x},${y},${z}`);
+
+    // Add physics body
+    const blockBody = new CANNON.Box(new CANNON.Vec3(blockSize / 2, blockSize / 2, blockSize / 2));
+    const blockShape = new CANNON.Body({
+        mass: 0,
+        position: new CANNON.Vec3(x, y + blockSize / 2, z),
+    });
+    blockShape.addShape(blockBody);
+    world.addBody(blockShape);
 }
 
 // Generate terrain using Perlin noise
@@ -41,18 +56,28 @@ function generateTerrain() {
             }
         }
     }
+
+    // Create a ground plane
+    const groundGeometry = new THREE.PlaneGeometry(200, 200);
+    const groundMaterial = new THREE.MeshLambertMaterial({ color: '#228B22' }); // Green for grass
+    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+    ground.rotation.x = - Math.PI / 2;
+    ground.position.y = -1; // Position below the terrain
+    scene.add(ground);
 }
 
+// Call terrain generation
 generateTerrain();
 
 // Position the camera
-camera.position.set(50, 30, 50);
+camera.position.set(50, 20, 50);
 camera.lookAt(50, 0, 50);
 
 // Mouse control variables
 let mouseX = 0;
 let mouseY = 0;
 let cameraRotationSpeed = 0.002;
+let velocity = new CANNON.Vec3();
 
 // Handle mouse movement for camera rotation
 document.addEventListener('mousemove', (event) => {
@@ -61,25 +86,12 @@ document.addEventListener('mousemove', (event) => {
 });
 
 // Handle keyboard input for moving the camera
+const keys = {};
 document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'w': // Forward
-            camera.position.z -= 0.1 * Math.cos(camera.rotation.y);
-            camera.position.x -= 0.1 * Math.sin(camera.rotation.y);
-            break;
-        case 's': // Backward
-            camera.position.z += 0.1 * Math.cos(camera.rotation.y);
-            camera.position.x += 0.1 * Math.sin(camera.rotation.y);
-            break;
-        case 'a': // Left
-            camera.position.z -= 0.1 * Math.sin(camera.rotation.y);
-            camera.position.x += 0.1 * Math.cos(camera.rotation.y);
-            break;
-        case 'd': // Right
-            camera.position.z += 0.1 * Math.sin(camera.rotation.y);
-            camera.position.x -= 0.1 * Math.cos(camera.rotation.y);
-            break;
-    }
+    keys[event.key] = true;
+});
+document.addEventListener('keyup', (event) => {
+    keys[event.key] = false;
 });
 
 // Handle block selection
@@ -108,6 +120,32 @@ function animate() {
     camera.rotation.y -= (mouseX - 0.5) * cameraRotationSpeed;
     camera.rotation.x -= (mouseY - 0.5) * cameraRotationSpeed;
     camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x)); // Clamp vertical rotation
+
+    // Handle movement with WASD
+    const speed = 0.2;
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    forward.y = 0; // Ignore vertical movement
+    forward.normalize();
+
+    const right = new THREE.Vector3();
+    right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+
+    if (keys['w']) {
+        camera.position.add(forward.multiplyScalar(speed));
+    }
+    if (keys['s']) {
+        camera.position.add(forward.multiplyScalar(-speed));
+    }
+    if (keys['a']) {
+        camera.position.add(right.multiplyScalar(-speed));
+    }
+    if (keys['d']) {
+        camera.position.add(right.multiplyScalar(speed));
+    }
+
+    // Update physics world
+    world.step(1 / 60);
 
     renderer.render(scene, camera);
 }
