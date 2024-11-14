@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft-like Game with Terrain Generation</title>
+    <title>Minecraft-like Game with Physics</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -28,13 +28,14 @@
 <body>
     <div id="menu">
         <h3>Select Block Type</h3>
-        <button class="block-button" style="background-color: #ff0000;" data-color="#ff0000"></button>
+        <button class="block-button" style="background-color: #8B4513;" data-color="#8B4513"></button>
         <button class="block-button" style="background-color: #00ff00;" data-color="#00ff00"></button>
         <button class="block-button" style="background-color: #0000ff;" data-color="#0000ff"></button>
         <button class="block-button" style="background-color: #ffff00;" data-color="#ffff00"></button>
         <button class="block-button" style="background-color: #ff00ff;" data-color="#ff00ff"></button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon-es/0.22.0/cannon-es.min.js"></script>
     <script src="https://cdn.rawgit.com/robertleeplummerjr/perlin.js/master/perlin.js"></script>
     <script src="app.js"></script>
 </body>
