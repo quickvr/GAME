@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft-like Game with Creative Menu</title>
+    <title>Minecraft-like Game with Mouse Control</title>
     <style>
-        body { margin: 0; display: flex; flex-direction: column; }
+        body { margin: 0; overflow: hidden; }
         canvas { display: block; }
         #menu {
             position: absolute;
@@ -14,6 +14,7 @@
             background: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
+            z-index: 1;
         }
         .block-button {
             width: 50px;
