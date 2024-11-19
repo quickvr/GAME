@@ -11,24 +11,39 @@
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Add a cube to the scene
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+        // Add a ground plane
+        const planeGeometry = new THREE.PlaneGeometry(500, 500);
+        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCCCC, side: THREE.DoubleSide });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = - Math.PI / 2; // Rotate the plane to be horizontal
+        scene.add(plane);
 
-        // Add OrbitControls for mouse interaction
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        camera.position.z = 5;
+        // Add multiple cubes to the scene
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        for (let i = 0; i < 5; i++) {
+            const geometry = new THREE.BoxGeometry();
+            const cube = new THREE.Mesh(geometry, cubeMaterial);
+            cube.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+            scene.add(cube);
+        }
+
+        // Add Pointer Lock controls for mouse interaction
+        const controls = new THREE.PointerLockControls(camera, document.body);
+        document.body.appendChild(controls.getObject());
+
+        // Add event listener for pointer lock
+        document.addEventListener('click', () => {
+            controls.lock();
+        });
 
         // Handle window resize
         window.addEventListener('resize', () => {
@@ -42,9 +57,7 @@
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
-            controls.update(); // Only required if controls.enableDamping = true, or if controls.autoRotate = true
+            controls.update(); // Update controls
             renderer.render(scene, camera);
         }
         animate();
