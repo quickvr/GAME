@@ -20,15 +20,31 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Add a ground plane
-        const planeGeometry = new THREE.PlaneGeometry(500, 500);
-        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCCCC, side: THREE.DoubleSide });
-        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-        plane.rotation.x = - Math.PI / 2; // Rotate the plane to be horizontal
-        scene.add(plane);
+        // Add ambient light
+        const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+        scene.add(ambientLight);
+
+        // Add directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // White light
+        directionalLight.position.set(5, 10, 7.5); // Position of the light
+        scene.add(directionalLight);
+
+        // Create a floor made of cubes
+        const floorSize = 10; // Size of the floor
+        const cubeSize = 1; // Size of each cube
+
+        for (let x = -floorSize; x < floorSize; x++) {
+            for (let z = -floorSize; z < floorSize; z++) {
+                const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+                const material = new THREE.MeshStandardMaterial({ color: 0xCCCCCC }); // Use MeshStandardMaterial for better lighting
+                const cube = new THREE.Mesh(geometry, material);
+                cube.position.set(x * cubeSize, cubeSize / 2, z * cubeSize); // Position each cube
+                scene.add(cube);
+            }
+        }
 
         // Add multiple cubes to the scene
-        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
         for (let i = 0; i < 5; i++) {
             const geometry = new THREE.BoxGeometry();
             const cube = new THREE.Mesh(geometry, cubeMaterial);
