@@ -43,7 +43,7 @@
             }
         }
 
-        // Add multiple cubes to the scene
+        // Add multiple random cubes to the scene
         const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
         for (let i = 0; i < 5; i++) {
             const geometry = new THREE.BoxGeometry();
@@ -51,6 +51,10 @@
             cube.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
             scene.add(cube);
         }
+
+        // Position camera higher to see cubes
+        camera.position.set(0, 5, 15); // Set camera position
+        camera.lookAt(0, 0, 0); // Look at the center of the scene
 
         // Add Pointer Lock controls for mouse interaction
         const controls = new THREE.PointerLockControls(camera, document.body);
