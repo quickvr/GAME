@@ -3,84 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Rendering with Three.js</title>
-    <style>
-        body { margin: 0; }
-        canvas { display: block; }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <title>Poker Game</title>
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
-    <script>
-        // Set up the scene, camera, and renderer
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        // Add ambient light
-        const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
-        scene.add(ambientLight);
-
-        // Add directional light
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // White light
-        directionalLight.position.set(5, 10, 7.5); // Position of the light
-        scene.add(directionalLight);
-
-        // Create a floor made of cubes
-        const floorSize = 10; // Size of the floor
-        const cubeSize = 1; // Size of each cube
-
-        for (let x = -floorSize; x < floorSize; x++) {
-            for (let z = -floorSize; z < floorSize; z++) {
-                const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-                const material = new THREE.MeshStandardMaterial({ color: 0xCCCCCC }); // Use MeshStandardMaterial for better lighting
-                const cube = new THREE.Mesh(geometry, material);
-                cube.position.set(x * cubeSize, cubeSize / 2, z * cubeSize); // Position each cube
-                scene.add(cube);
-            }
-        }
-
-        // Add multiple random cubes to the scene
-        const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-        for (let i = 0; i < 5; i++) {
-            const geometry = new THREE.BoxGeometry();
-            const cube = new THREE.Mesh(geometry, cubeMaterial);
-            cube.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
-            scene.add(cube);
-        }
-
-        // Position camera higher to see cubes
-        camera.position.set(0, 5, 15); // Set camera position
-        camera.lookAt(0, 0, 0); // Look at the center of the scene
-
-        // Add Pointer Lock controls for mouse interaction
-        const controls = new THREE.PointerLockControls(camera, document.body);
-        document.body.appendChild(controls.getObject());
-
-        // Add event listener for pointer lock
-        document.addEventListener('click', () => {
-            controls.lock();
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-        });
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update(); // Update controls
-            renderer.render(scene, camera);
-        }
-        animate();
-    </script>
+    <h1>Play Poker Against AI</h1>
+    <div id="game">
+        <button id="deal-button">Deal Cards</button>
+        <div id="messages"></div>
+        <div id="player-hand"></div>
+        <div id="ai-hand"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
